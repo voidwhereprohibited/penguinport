@@ -7,3 +7,8 @@ build/
 dist/
 src/landfall/data/linux/
 src/landfall/data/applogos/
+
+# test coverage data (contains local paths)
+.coverage
+.coverage.*
+htmlcov/
