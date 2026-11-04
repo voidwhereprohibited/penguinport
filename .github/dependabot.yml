@@ -1,0 +1,23 @@
+version: 2
+updates:
+  # Keeps the pinned actions in .github/workflows current.
+  # Cooldown applies to version bumps only; security updates still open immediately.
+  # github-actions does not accept the semver-*-days cooldown fields.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7
+
+  # requirements.txt, requirements-dev.txt, and pyproject.toml.
+  # CI installs from requirements-dev.lock, so a version PR still needs that lock regenerated.
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+      semver-minor-days: 7
+      semver-patch-days: 3

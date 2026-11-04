@@ -6,22 +6,30 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Least privilege: jobs only read the repo. Artifact upload/download uses the
+# runtime token, not GITHUB_TOKEN, so no extra scopes are needed.
+permissions:
+  contents: read
+
 env:
   NFPM_VERSION: "2.48.0"
+  # From https://github.com/goreleaser/nfpm/releases/download/v2.48.0/checksums.txt
+  # (line for nfpm_2.48.0_Linux_x86_64.tar.gz). Update together with NFPM_VERSION.
+  NFPM_SHA256: "6d7f9a28b2f397934403950fcbba83f598b08d02edbe79a0815b3b4897341750"
 
 jobs:
   linux:
     # Built on the oldest supported Ubuntu so the installers work on older distros too.
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: "3.14"
       - name: Install system libraries for Qt tests
         run: sudo apt-get update && sudo apt-get install -y libegl1 libxkbcommon-x11-0 libxcb-cursor0
       - name: Install dependencies
-        run: pip install -r requirements-dev.txt
+        run: pip install --require-hashes --no-deps -r requirements-dev.lock
       - name: Download app logos from Flathub
         run: python tools/fetch_logos.py
       - name: Run tests
@@ -39,14 +47,16 @@ jobs:
         run: rm -f build/linux/penguinport/_internal/libfontconfig.so* build/linux/penguinport/_internal/libfreetype.so* build/linux/penguinport/_internal/libexpat.so*
       - name: Package .deb and .rpm
         run: |
-          curl -sSL -o nfpm.tgz "https://github.com/goreleaser/nfpm/releases/download/v${NFPM_VERSION}/nfpm_${NFPM_VERSION}_Linux_x86_64.tar.gz"
+          curl -fsSL --proto '=https' --tlsv1.2 -o nfpm.tgz "https://github.com/goreleaser/nfpm/releases/download/v${NFPM_VERSION}/nfpm_${NFPM_VERSION}_Linux_x86_64.tar.gz"
+          echo "${NFPM_SHA256}  nfpm.tgz" | sha256sum -c -
           tar -xzf nfpm.tgz nfpm
           mkdir -p linux-out
-          export LANDFALL_VERSION=$(python -c "import sys; sys.path.insert(0,'src'); import landfall; print(landfall.__version__)")
+          LANDFALL_VERSION="$(python -c "import sys; sys.path.insert(0,'src'); import landfall; print(landfall.__version__)")"
+          export LANDFALL_VERSION
           ./nfpm pkg -f packaging/linux/nfpm.yaml -p deb -t linux-out/
           ./nfpm pkg -f packaging/linux/nfpm.yaml -p rpm -t linux-out/
           ls -la linux-out
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: PenguinPort-linux
           path: linux-out/*
@@ -55,12 +65,12 @@ jobs:
     needs: linux
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: "3.14"
       - name: Install dependencies
-        run: pip install -r requirements-dev.txt
+        run: pip install --require-hashes --no-deps -r requirements-dev.lock
       - name: Download app logos from Flathub
         run: python tools/fetch_logos.py
       - name: Run tests
@@ -68,13 +78,13 @@ jobs:
         env:
           QT_QPA_PLATFORM: offscreen
       - name: Get the Linux installers to carry inside the .exe
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
           name: PenguinPort-linux
           path: src/landfall/data/linux
       - name: Build exe
         run: pyinstaller --onefile --windowed --name PenguinPort --paths src --add-data "src/landfall/data:landfall/data" --icon src/landfall/data/penguinport.ico run_landfall.py
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
           name: PenguinPort-windows
           path: dist/PenguinPort.exe
