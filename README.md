@@ -13,9 +13,9 @@
 **Move from Windows to Linux without losing anything, and without ever opening a terminal.**
 
 PenguinPort is a free, open-source moving helper for people leaving Windows 10. Run it on your
-Windows PC, plug in a USB drive, and it packs up your files, browser data, email, contacts,
-Wi-Fi networks and more into one password-locked bundle. Plug that drive into your new Linux
-PC, double-click PenguinPort, and everything lands where it belongs, with your apps installed.
+Windows PC, plug in a USB drive, and it packs up your files and browser data (bookmarks,
+history and passwords) into one password-locked bundle. Plug that drive into your new Linux
+PC, double-click PenguinPort, and your files land where they belong, with your apps installed.
 
 It works with any Linux distro, and it only ever *reads* your Windows drive. It never changes
 or repartitions anything.
@@ -23,7 +23,7 @@ or repartitions anything.
 > **Status: early development.** PenguinPort can already check a Windows PC, let you pick
 > Linux apps side by side, pack your files into a locked bundle, move your browser bookmarks,
 > history and passwords, update the new Linux PC, and unpack everything with your apps
-> installed. The rest of the list below is being built now.
+> installed. Everything marked *Planned* below is not built yet.
 
 ## What PenguinPort will move
 
@@ -77,18 +77,20 @@ or repartitions anything.
   Fedora), click **Install**, then open PenguinPort from your app menu. No terminal, ever.
 - PenguinPort first offers to update the whole system for you (one password, no terminal).
 - Enter the bundle password you chose on Windows.
-- PenguinPort puts your files in the matching folders, installs your apps, loads your bookmarks
-  and contacts, connects your Wi-Fi and sets your wallpaper.
+- PenguinPort puts your files in the matching folders, installs your apps, and loads your
+  browser bookmarks, history and passwords.
 - You finish with a short "what's left to do" checklist.
 
 ## Safety first
 
 - **Read-only on Windows:** PenguinPort never modifies, deletes or repartitions anything.
-- **Encrypted:** passwords, browser data and email only travel inside an AES-256 bundle you
-  can open with free 7-Zip.
-- **No internet needed, no tracking:** PenguinPort has no network code and sends nothing anywhere.
-- **No surprises:** see the bundle size before packing, check the USB has room, resume if
-  unplugged, and verify every file arrived intact.
+- **Encrypted:** your files and browser data (including passwords) only travel inside an
+  AES-256 bundle you can open with free 7-Zip.
+- **Never sends your data anywhere, no tracking:** your files and passwords stay on your PCs
+  and your USB drive. The Linux side does use the internet to update the system and install
+  your apps (from your distro and Flathub), just like the app store would.
+- **No surprises:** see the bundle size before packing, and PenguinPort checks the USB drive
+  (and the new PC) has room first. Files it can't read are listed, not silently dropped.
 
 ## Roadmap
 
