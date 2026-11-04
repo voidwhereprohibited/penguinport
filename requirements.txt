@@ -1,3 +1,3 @@
 PySide6>=6.10
-py7zr>=1.1
+py7zr>=1.1.4
 multivolumefile>=0.2.3
