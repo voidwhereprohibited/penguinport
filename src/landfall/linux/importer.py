@@ -15,6 +15,7 @@ from landfall.linux import browsers as browsers_mod
 from landfall.linux import system_update
 from landfall.linux.dirs import user_dirs
 from landfall.linux.tips import QUICK_START, TIPS
+from landfall.scan.owned import describe
 from landfall.linux.restore import (RestoreCancelled, WrongPassword, extract_private,
                                     find_bundles, read_manifest, restore)
 from landfall.scan.folders import human_size
@@ -687,6 +688,11 @@ class Importer(Shell):
             todo.append(f"\u2022 {len(r.failed)} file(s) couldn't be unpacked.")
         todo.append("\u2022 Sign in to your browser to bring back bookmarks and passwords "
                     "(automatic moving for these is coming soon).")
+        owned = (self.manifest or {}).get("owned_apps", [])
+        if owned:
+            todo.append("\u2022 Paid apps you own on Windows (check each maker's site for "
+                        "a Linux version or your account downloads): "
+                        + ", ".join(describe(a) for a in owned) + ".")
         todo.append("\u2022 Keep the USB drive until you've checked everything arrived.")
         if self.restart_later:
             todo.insert(0, "\u2022 <b>Restart your PC</b> when you're ready, to finish "
