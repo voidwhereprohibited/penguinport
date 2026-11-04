@@ -20,6 +20,7 @@ from landfall.pack import PackCancelled, browser_folders, browser_records, pack,
 from landfall.scan.browsers import find_browsers, open_password_export
 from landfall.report import build_html, option_text
 from landfall.scan.apps import scan_apps
+from landfall.scan.owned import owned_paid_apps
 from landfall.scan.folders import extra_files, extra_folder, find_folders, human_size, measure
 from landfall.scan.hardware import hardware_notes, scan_hardware
 from landfall.ui import (ICON, ICONS, CategoryCard, ChoiceRow, FolderPicker, ScoreRing, StepDialog,
@@ -36,7 +37,6 @@ COMING_SOON = [
     "Wi-Fi networks and passwords",
     "Wallpaper and fonts",
     "Game saves",
-    "Product keys and licenses list",
 ]
 STEPS = ["Welcome", "Check this PC", "Pick your apps", "Pick your files", "Where to save",
          "Packing", "All done"]
@@ -994,6 +994,8 @@ class Wizard(Shell):
         extra = {"apps": self._app_records(), "install": self.chosen_apps(),
                  "extra_folders": [f.name for f in folders if f.extra],
                  "browsers": browser_records(self._pack_browsers),
+                 "owned_apps": owned_paid_apps([r.app for results in (self.grouped or {}).values()
+                                                for r in results]),
                  "hardware": self.hw or {}}
         self.pack_status.setText(f"Packing to {drive.title}...")
 
