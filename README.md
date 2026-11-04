@@ -40,7 +40,7 @@ or repartitions anything.
 | 📶 | **Wi-Fi networks and passwords** | Planned |
 | 🖼️ | **Personal touches:** wallpaper and fonts | Planned |
 | 🎮 | **Game saves** | Planned |
-| 🔑 | **Product keys and licenses list**, so you don't lose paid software | Planned |
+| 🧾 | **Paid apps list:** names and versions of the paid software you own, so you know what to get again (never product keys) | ✅ Working |
 | 📦 | **Apps:** matched Linux apps installed with one click | ✅ Working |
 
 ## Screenshots
